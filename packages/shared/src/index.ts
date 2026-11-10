@@ -80,7 +80,7 @@ export const AI_MODES: Record<ChatModeId, ChatMode> = {
     label: "Write a YouTube script",
     short: "Script",
     description: "Hook-first video scripts with sections, b-roll notes and CTAs.",
-    icon: "Youtube",
+    icon: "Video",
     placeholder: "What's the video about? e.g. “10-minute video about building a PC”",
     suggestions: [
       "A 10-minute YouTube script about building a gaming PC",
@@ -169,7 +169,7 @@ export const PROJECT_TYPE_DEFS: Record<ProjectTypeId, ProjectTypeDef> = {
     id: "youtube_scripts",
     label: "YouTube Scripts",
     description: "Video scripts, hooks, storyboards and channel content.",
-    icon: "Youtube",
+    icon: "Video",
     badgeClass: "bg-red-500/10 text-red-600 dark:text-red-400",
   },
   blog_posts: {
