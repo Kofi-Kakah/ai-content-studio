@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeftIcon,
-  Loader2Icon,
   MessageSquareIcon,
   MoreHorizontalIcon,
   PencilIcon,
@@ -31,7 +30,6 @@ import { ProjectFormDialog } from "@/components/projects/project-form-dialog";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const id = params.id;
 
   const { data, isLoading } = useProject(id);
@@ -131,7 +129,7 @@ export default function ProjectDetailPage() {
                   <PencilIcon />
                   Edit project
                 </DropdownMenuItem>
-                <DeleteProjectButton projectId={project.id} projectName={project.name} />
+                <DeleteProjectButton projectId={project.id} />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -187,7 +185,6 @@ function ConversationRow({
   const { data } = useProject(projectId);
   const conversation = data?.conversations.find((c) => c.id === conversationId);
   const move = useMoveConversation();
-  const router = useRouter();
 
   if (!conversation) return null;
 
@@ -234,10 +231,8 @@ function ConversationRow({
 
 function DeleteProjectButton({
   projectId,
-  projectName,
 }: {
   projectId: string;
-  projectName: string;
 }) {
   const del = useDeleteProject();
   const router = useRouter();

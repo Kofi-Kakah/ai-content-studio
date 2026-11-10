@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import {
   formatNumber,
-  type StatsOverview,
   type UsageDay,
 } from "@studio/shared";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

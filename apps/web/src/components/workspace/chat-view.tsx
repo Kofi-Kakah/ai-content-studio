@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import {
   DownloadIcon,
   FolderIcon,
@@ -30,7 +30,6 @@ interface StreamState {
 }
 
 export function ChatView({ newChat = false }: { newChat?: boolean }) {
-  const router = useRouter();
   const params = useParams<{ id?: string }>();
   const searchParams = useSearchParams();
   const qc = useQueryClient();
@@ -55,22 +54,29 @@ export function ChatView({ newChat = false }: { newChat?: boolean }) {
   const stickToBottomRef = React.useRef(true);
 
   // URL id changes (navigating between chats)
-  React.useEffect(() => {
-    if (urlId && urlId !== activeId && !streaming) {
+  const [prevUrlId, setPrevUrlId] = React.useState<string | null>(urlId);
+  if (urlId !== prevUrlId) {
+    setPrevUrlId(urlId);
+    if (!streaming) {
       setActiveId(urlId);
       setPendingUserMessage(null);
       setStream(null);
-      stickToBottomRef.current = true;
     }
-  }, [urlId, activeId, streaming]);
+  }
+
+  React.useEffect(() => {
+    stickToBottomRef.current = true;
+  }, [urlId]);
 
   // Load the conversation's mode when opening an existing chat
   const { data, isLoading } = useConversation(activeId);
-  React.useEffect(() => {
-    if (data?.conversation?.mode) {
+  const [prevConvId, setPrevConvId] = React.useState<string | null>(null);
+  if (data?.conversation?.id && data.conversation.id !== prevConvId) {
+    setPrevConvId(data.conversation.id);
+    if (data.conversation.mode) {
       setMode((data.conversation.mode as ChatModeId) ?? "chat");
     }
-  }, [data?.conversation?.id, data?.conversation?.mode]);
+  }
 
   const messages = data?.messages ?? [];
 

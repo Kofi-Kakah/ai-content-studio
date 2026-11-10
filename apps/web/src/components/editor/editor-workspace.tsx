@@ -47,6 +47,19 @@ const MonacoEditor = dynamic(() => import("./monaco-editor").then((m) => m.Monac
 
 type ViewMode = "editor" | "split" | "preview";
 
+const TOOLBAR_ITEMS = [
+  { icon: <BoldIcon />, label: "Bold" },
+  { icon: <ItalicIcon />, label: "Italic" },
+  { icon: <Heading2Icon />, label: "Heading" },
+  { icon: <ListIcon />, label: "Bullet list" },
+  { icon: <ListOrderedIcon />, label: "Numbered list" },
+  { icon: <QuoteIcon />, label: "Quote" },
+  { icon: <CodeIcon />, label: "Code" },
+  { icon: <LinkIcon />, label: "Link" },
+  { icon: <MinusIcon />, label: "Divider" },
+  { icon: <TableIcon />, label: "Table" },
+];
+
 export function EditorWorkspace({ messageId }: { messageId: string }) {
   const router = useRouter();
   const qc = useQueryClient();
@@ -62,12 +75,12 @@ export function EditorWorkspace({ messageId }: { messageId: string }) {
   const conversation = data?.conversation;
 
   // Hydrate once the message arrives
-  React.useEffect(() => {
-    if (message && !savedContent) {
-      setContent(message.content);
-      setSavedContent(message.content);
-    }
-  }, [message, savedContent]);
+  const [prevMessageId, setPrevMessageId] = React.useState<string | null>(null);
+  if (message && message.id !== prevMessageId) {
+    setPrevMessageId(message.id);
+    setContent(message.content);
+    setSavedContent(message.content);
+  }
 
   const dirty = content !== savedContent;
 
@@ -130,6 +143,43 @@ export function EditorWorkspace({ messageId }: { messageId: string }) {
     URL.revokeObjectURL(url);
   };
 
+  const applyTool = React.useCallback((label: string) => {
+    const handle = monacoRef.current;
+    if (!handle) return;
+    switch (label) {
+      case "Bold":
+        handle.wrap("**");
+        break;
+      case "Italic":
+        handle.wrap("*");
+        break;
+      case "Heading":
+        handle.prefixLines("## ");
+        break;
+      case "Bullet list":
+        handle.prefixLines("- ");
+        break;
+      case "Numbered list":
+        handle.prefixLines("1. ");
+        break;
+      case "Quote":
+        handle.prefixLines("> ");
+        break;
+      case "Code":
+        handle.wrap("`");
+        break;
+      case "Link":
+        handle.wrap("[", "](https://)");
+        break;
+      case "Divider":
+        handle.insert("\n\n---\n\n");
+        break;
+      case "Table":
+        handle.insert("\n| Column | Description |\n| --- | --- |\n|  |  |\n");
+        break;
+    }
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flex h-full flex-col">
@@ -156,27 +206,6 @@ export function EditorWorkspace({ messageId }: { messageId: string }) {
   }
 
   const mode = message.mode ? getMode(message.mode) : null;
-
-  const tools: { icon: React.ReactNode; label: string; action: () => void }[] = [
-    { icon: <BoldIcon />, label: "Bold", action: () => monacoRef.current?.wrap("**") },
-    { icon: <ItalicIcon />, label: "Italic", action: () => monacoRef.current?.wrap("*") },
-    { icon: <Heading2Icon />, label: "Heading", action: () => monacoRef.current?.prefixLines("## ") },
-    { icon: <ListIcon />, label: "Bullet list", action: () => monacoRef.current?.prefixLines("- ") },
-    { icon: <ListOrderedIcon />, label: "Numbered list", action: () => monacoRef.current?.prefixLines("1. ") },
-    { icon: <QuoteIcon />, label: "Quote", action: () => monacoRef.current?.prefixLines("> ") },
-    { icon: <CodeIcon />, label: "Code", action: () => monacoRef.current?.wrap("`") },
-    {
-      icon: <LinkIcon />,
-      label: "Link",
-      action: () => monacoRef.current?.wrap("[", "](https://)"),
-    },
-    { icon: <MinusIcon />, label: "Divider", action: () => monacoRef.current?.insert("\n\n---\n\n") },
-    {
-      icon: <TableIcon />,
-      label: "Table",
-      action: () => monacoRef.current?.insert("\n| Column | Description |\n| --- | --- |\n|  |  |\n"),
-    },
-  ];
 
   return (
     <div className="flex h-full flex-col">
@@ -249,14 +278,14 @@ export function EditorWorkspace({ messageId }: { messageId: string }) {
       {/* Toolbar */}
       {view !== "preview" ? (
         <div className="flex h-10 shrink-0 items-center gap-0.5 border-b px-3">
-          {tools.map((t) => (
+          {TOOLBAR_ITEMS.map((t) => (
             <Button
               key={t.label}
               variant="ghost"
               size="icon-xs"
               aria-label={t.label}
               title={t.label}
-              onClick={t.action}
+              onClick={() => applyTool(t.label)}
             >
               {t.icon}
             </Button>

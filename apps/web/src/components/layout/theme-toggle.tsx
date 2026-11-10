@@ -10,15 +10,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+const emptySubscribe = () => () => {};
+
 /**
  * Light / dark / system theme switcher (next-themes).
  * Cycles through the three modes; shows what's next.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => setMounted(true), []);
+  const mounted = React.useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   const next = theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
   const label =

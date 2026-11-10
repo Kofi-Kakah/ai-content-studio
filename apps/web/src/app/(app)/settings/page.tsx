@@ -26,7 +26,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -294,12 +293,17 @@ function PasswordForm() {
   );
 }
 
+const emptySubscribe = () => () => {};
+
 /* ----------------------------- appearance ----------------------------- */
 
 function AppearancePicker() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const mounted = React.useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   const options = [
     { value: "light", label: "Light", icon: <SunIcon className="size-4" /> },

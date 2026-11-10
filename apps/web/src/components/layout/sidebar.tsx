@@ -7,10 +7,8 @@ import {
   BarChart3Icon,
   FilePenIcon,
   FolderIcon,
-  MessageSquarePlusIcon,
   MoreHorizontalIcon,
   PencilIcon,
-  PencilRulerIcon,
   SearchIcon,
   SparklesIcon,
   Trash2Icon,
@@ -22,7 +20,6 @@ import { getMode } from "@studio/shared";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
@@ -226,7 +223,6 @@ function ConversationRow({
   onNavigate?: () => void;
   onDeleted?: () => void;
 }) {
-  const router = useRouter();
   const rename = useRenameConversation();
   const move = useMoveConversation();
   const del = useDeleteConversation();

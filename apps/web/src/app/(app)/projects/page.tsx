@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   FolderIcon,
   Loader2Icon,
-  MoreHorizontalIcon,
   PencilIcon,
   PlusIcon,
   SearchIcon,
@@ -23,12 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,

@@ -38,9 +38,13 @@ export function CommandPalette() {
   const [query, setQuery] = React.useState("");
   const debounced = useDebouncedValue(query, 250);
 
-  React.useEffect(() => {
-    if (!open) setQuery("");
-  }, [open]);
+  const [prevOpen, setPrevOpen] = React.useState(open);
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (!open && query !== "") {
+      setQuery("");
+    }
+  }
 
   const { data: conversations } = useConversations(open ? debounced : "");
   const { data: projects } = useProjects(open ? debounced : "", "all");

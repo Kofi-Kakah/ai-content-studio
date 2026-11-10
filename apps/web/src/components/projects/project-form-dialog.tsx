@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import {
@@ -16,7 +16,6 @@ import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -89,7 +88,7 @@ export function ProjectFormDialog({
     }
   };
 
-  const type = form.watch("type");
+  const type = useWatch({ control: form.control, name: "type" });
   const busy = create.isPending || update.isPending;
 
   return (
