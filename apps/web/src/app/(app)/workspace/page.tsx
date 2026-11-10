@@ -1,7 +1,13 @@
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { ChatView } from "@/components/workspace/chat-view";
+
+export const metadata: Metadata = { title: "Workspace" };
+
 export default function WorkspacePage() {
   return (
-    <div className="flex h-full items-center justify-center text-muted-foreground">
-      Workspace — coming in the next step
-    </div>
+    <Suspense>
+      <ChatView newChat />
+    </Suspense>
   );
 }
