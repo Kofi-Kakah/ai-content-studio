@@ -11,6 +11,9 @@ import { uploadsRouter } from "./routes/uploads.js";
 import { conversationsRouter } from "./routes/conversations.js";
 import { messagesRouter } from "./routes/messages.js";
 import { aiRouter } from "./routes/ai.js";
+import { projectsRouter } from "./routes/projects.js";
+import { statsRouter } from "./routes/stats.js";
+import { activityRouter } from "./routes/activity.js";
 
 export function createApp() {
   const app = express();
@@ -50,5 +53,9 @@ function protectedRoutes() {
   router.use("/conversations", conversationsRouter);
   router.use("/messages", messagesRouter);
   router.use("/ai", aiRouter);
+  router.use("/projects", projectsRouter);
+  router.use("/stats", statsRouter);
+  router.use("/activity", activityRouter);
+  router.use("/uploads", uploadsRouter);
   return router;
 }
