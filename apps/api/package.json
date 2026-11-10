@@ -1,0 +1,44 @@
+{
+  "name": "@studio/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "contract:emit": "prisma contract emit",
+    "db:push": "prisma contract emit && prisma db update",
+    "db:seed": "tsx src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1164.0",
+    "@prisma/orm-postgres": "^8.0.0-rc.23",
+    "@studio/shared": "*",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.41.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0",
+    "openai": "^7.53.0",
+    "resend": "^6.37.0",
+    "temporal-polyfill": "^1.0.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@prisma/cli-engine": "^0.9.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.3.0",
+    "@types/node": "^20",
+    "prisma": "^8.0.0-rc.33",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}
