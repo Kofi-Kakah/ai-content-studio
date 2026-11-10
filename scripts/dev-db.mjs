@@ -3,6 +3,7 @@
  *
  * Boots a zero-config embedded PostgreSQL (binaries from the `embedded-postgres`
  * npm package — no Docker required) so the whole stack can run locally.
+ * The process stays alive and manages the database server.
  *
  * In production, point DATABASE_URL at a hosted Postgres such as Neon.
  */
@@ -23,20 +24,36 @@ const pg = new EmbeddedPostgres({
   onError: (err) => console.error(`[pg] ${err.message}`),
 });
 
-if (!persistent) {
-  console.log("[db] initialising embedded postgres at", databaseDir);
-  await pg.initialise();
+async function main() {
+  if (!persistent) {
+    console.log("[db] initialising embedded postgres at", databaseDir);
+    await pg.initialise();
+  }
+
+  await pg.start();
+  console.log("[db] embedded postgres running on port 54329");
+
+  try {
+    await pg.createDatabase("aistudio");
+    console.log("[db] created database 'aistudio'");
+  } catch {
+    console.log("[db] database 'aistudio' already exists");
+  }
+
+  console.log("[db] connection string:");
+  console.log("     postgresql://postgres:postgres@localhost:54329/aistudio");
+  console.log("[db] ready — keeping process alive");
 }
 
-await pg.start();
-console.log("[db] embedded postgres running on port 54329");
+main().catch((err) => {
+  console.error("[db] fatal:", err);
+  process.exit(1);
+});
 
-try {
-  await pg.createDatabase("aistudio");
-  console.log("[db] created database 'aistudio'");
-} catch {
-  console.log("[db] database 'aistudio' already exists");
+function shutdown(signal) {
+  console.log(`[db] ${signal} received — stopping postgres`);
+  pg.stop().finally(() => process.exit(0));
 }
 
-console.log("[db] connection string:");
-console.log("     postgresql://postgres:postgres@localhost:54329/aistudio");
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
