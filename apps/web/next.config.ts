@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -12,6 +11,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  transpilePackages: ["@studio/shared"],
 };
 
 export default nextConfig;

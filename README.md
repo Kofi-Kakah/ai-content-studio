@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Content Studio
 
-## Getting Started
+A full-stack AI content generation studio — articles, social posts, YouTube scripts,
+summaries, titles and SEO descriptions — with a ChatGPT-style workspace, projects,
+usage analytics and a rich editor.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js (App Router) · TypeScript · Tailwind CSS v4 · shadcn/ui (Base UI) · TanStack Query · Zustand · React Hook Form + Zod · Recharts · react-markdown · Monaco · cmdk |
+| Backend | Separate Node.js API server (Express 5 · TypeScript) |
+| Database | PostgreSQL (Neon) with Prisma 8 ORM |
+| Auth | Auth.js (NextAuth v5) credentials + JWT sessions |
+| AI | NVIDIA NIM — `deepseek-ai/deepseek-v4.1-flash` |
+| Cache / rate limiting | Upstash Redis |
+| File uploads | Backblaze B2 (S3-compatible), local fallback in dev |
+| Email | Resend (password reset) |
+| Hosting | Vercel (web) + any Node host (API) |
+
+## Repository layout
+
+```
+apps/web        Next.js frontend
+apps/api        Node/Express API server (Prisma, AI, uploads, email)
+packages/shared Shared types, AI prompt templates, Zod schemas
+scripts/        Local dev database bootstrap (embedded PostgreSQL)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+cp apps/web/.env.example apps/web/.env
+cp apps/api/.env.example apps/api/.env    # fill in secrets
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+npm run db:start    # optional: local embedded PostgreSQL (or point DATABASE_URL at Neon)
+npm run db:push     # create tables + seed prompt data
+npm run db:seed     # demo user & sample content
 
-## Learn More
+npm run dev         # web on :3000, api on :4000
+```
 
-To learn more about Next.js, take a look at the following resources:
+Demo account (after seeding): `demo@studio.dev` / `Demo1234!`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Full documentation lives in [`docs/`](docs/).

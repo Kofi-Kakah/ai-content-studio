@@ -1,0 +1,146 @@
+// use prisma-8
+
+// ------------------------------------------------------------------
+// AI Content Studio — data contract
+// ------------------------------------------------------------------
+
+enum project_type {
+  @@type("pg/text@1")
+  youtube_scripts = "youtube_scripts"
+  blog_posts      = "blog_posts"
+  social_media    = "social_media"
+  marketing       = "marketing"
+}
+
+enum message_role {
+  @@type("pg/text@1")
+  user      = "user"
+  assistant = "assistant"
+  system    = "system"
+}
+
+model User {
+  id           String   @id @onCreate(uuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  image        String?
+  bio          String?
+  createdAt    temporal.CreatedAt
+  updatedAt    temporal.UpdatedAt
+
+  passwordResets PasswordResetToken[]
+  projects       Project[]
+  conversations  Conversation[]
+  activities     Activity[]
+  usageDaily     UsageDaily[]
+  files          FileRecord[]
+}
+
+model PasswordResetToken {
+  id        String    @id @onCreate(uuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt temporal.CreatedAt
+
+  @@index([userId])
+}
+
+model Project {
+  id          String       @id @onCreate(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  type        project_type
+  createdAt   temporal.CreatedAt
+  updatedAt   temporal.UpdatedAt
+
+  conversations Conversation[]
+
+  @@index([userId, type])
+}
+
+model Conversation {
+  id        String   @id @onCreate(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title     String
+  mode      String
+  createdAt temporal.CreatedAt
+  updatedAt temporal.UpdatedAt
+
+  messages Message[]
+
+  @@index([userId, updatedAt])
+  @@index([projectId])
+}
+
+model Message {
+  id               String       @id @onCreate(uuid())
+  conversationId   String
+  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId           String
+  role             message_role
+  content          String
+  mode             String?
+  model            String?
+  promptTokens     Int?
+  completionTokens Int?
+  totalTokens      Int?
+  latencyMs        Int?
+  active           Boolean      @default(true)
+  createdAt        temporal.CreatedAt
+
+  @@index([conversationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([role, active])
+}
+
+model Activity {
+  id          String   @id @onCreate(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String
+  title       String
+  description String?
+  metadata    String?
+  read        Boolean  @default(false)
+  createdAt   temporal.CreatedAt
+
+  @@index([userId, createdAt])
+}
+
+model UsageDaily {
+  id               String   @id @onCreate(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             DateTime
+  requests         Int      @default(0)
+  generations      Int      @default(0)
+  promptTokens     Int      @default(0)
+  completionTokens Int      @default(0)
+  conversations    Int      @default(0)
+
+  @@unique([userId, date])
+}
+
+model FileRecord {
+  id          String   @id @onCreate(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  key         String
+  url         String
+  mime        String
+  size        Int
+  textContent String?
+  createdAt   temporal.CreatedAt
+
+  @@index([userId, createdAt])
+}
