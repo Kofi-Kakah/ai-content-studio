@@ -67,6 +67,19 @@ export function useConversation(id: string | null) {
   });
 }
 
+export interface MessageDetail {
+  message: MessageDto;
+  conversation: Pick<ConversationDto, "id" | "title" | "mode" | "projectId">;
+}
+
+export function useMessage(id: string | null) {
+  return useQuery({
+    queryKey: ["message", id ?? "none"],
+    queryFn: () => api<MessageDetail>(`/messages/${id}`),
+    enabled: Boolean(id),
+  });
+}
+
 export function useRenameConversation() {
   const qc = useQueryClient();
   return useMutation({

@@ -22,6 +22,20 @@ async function getOwnedMessage(messageId: string, userId: string) {
   return { message, conversation };
 }
 
+/* GET /api/v1/messages/:id — single message + its conversation (editor) */
+messagesRouter.get("/:id", async (req, res) => {
+  const { message, conversation } = await getOwnedMessage(req.params.id, req.userId!);
+  res.json({
+    message: messageDto(message),
+    conversation: {
+      id: conversation.id,
+      title: conversation.title,
+      mode: conversation.mode,
+      projectId: conversation.projectId,
+    },
+  });
+});
+
 /* PATCH /api/v1/messages/:id — edit content (used by the Studio editor) */
 messagesRouter.patch("/:id", async (req, res) => {
   const input = updateMessageSchema.parse(req.body);
