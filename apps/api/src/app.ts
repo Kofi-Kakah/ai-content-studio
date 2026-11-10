@@ -8,6 +8,9 @@ import { healthRouter } from "./routes/health.js";
 import { authRouter } from "./routes/auth.js";
 import { usersRouter } from "./routes/users.js";
 import { uploadsRouter } from "./routes/uploads.js";
+import { conversationsRouter } from "./routes/conversations.js";
+import { messagesRouter } from "./routes/messages.js";
+import { aiRouter } from "./routes/ai.js";
 
 export function createApp() {
   const app = express();
@@ -44,5 +47,8 @@ export function createApp() {
 function protectedRoutes() {
   const router = express.Router();
   router.use("/users", usersRouter);
+  router.use("/conversations", conversationsRouter);
+  router.use("/messages", messagesRouter);
+  router.use("/ai", aiRouter);
   return router;
 }

@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'27a6e503514a9cc9d524f4f3d8bcf1d851ea437b93edc39f22117388682358d3'>;
+  StorageHashBase<'7b26413894bbc4af8fb003409991e6f2d6ad07b99fb90ca73064329cf7e2b705'>;
 export type ExecutionHash =
   ExecutionHashBase<'107bc361031613f6aee4fcba4ad6e7bd1f2a2b043eab6adb1b8acd6e185d31df'>;
 export type ProfileHash =
@@ -357,6 +357,7 @@ export namespace Models {
     createdAt: FieldOutputTypes['public']['Conversation']['createdAt'];
     id: FieldOutputTypes['public']['Conversation']['id'];
     mode: FieldOutputTypes['public']['Conversation']['mode'];
+    preview: FieldOutputTypes['public']['Conversation']['preview'];
     projectId: FieldOutputTypes['public']['Conversation']['projectId'];
     title: FieldOutputTypes['public']['Conversation']['title'];
     updatedAt: FieldOutputTypes['public']['Conversation']['updatedAt'];
@@ -587,6 +588,12 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly preview: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
                 readonly projectId: {
@@ -1316,6 +1323,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly preview: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly projectId: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1378,6 +1389,7 @@ type ContractBase = Omit<
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly id: { readonly column: 'id' };
                 readonly mode: { readonly column: 'mode' };
+                readonly preview: { readonly column: 'preview' };
                 readonly projectId: { readonly column: 'projectId' };
                 readonly title: { readonly column: 'title' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
