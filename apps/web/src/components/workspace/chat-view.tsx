@@ -48,6 +48,8 @@ export function ChatView({ newChat = false }: { newChat?: boolean }) {
   const [stream, setStream] = React.useState<StreamState | null>(null);
   const [streaming, setStreaming] = React.useState(false);
 
+  const presetProjectId = React.useRef<string | null>(searchParams.get("project"));
+
   const abortRef = React.useRef<AbortController | null>(null);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const stickToBottomRef = React.useRef(true);
@@ -194,6 +196,7 @@ export function ChatView({ newChat = false }: { newChat?: boolean }) {
         content,
         mode,
         attachmentIds: attachmentIds.length ? attachmentIds : undefined,
+        projectId: activeId ? undefined : (presetProjectId.current ?? undefined),
         regenerate: false,
       },
       activeId
