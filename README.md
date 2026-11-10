@@ -152,7 +152,7 @@ GET    /health
 - **Web (Vercel):** import the repo, set the root to `apps/web` (or use the
   monorepo setup), set `AUTH_SECRET`, `API_URL` and `AUTH_TRUST_HOST=true`.
 - **API (any Node host — Render, Railway, Fly, a VPS):** build with
-  `npm run build --workspace @studio/api`, run `node apps/api/dist/index.js`,
+  `npm run build --workspace @studio/api`, run `node apps/api/dist/src/index.js`,
   with `DATABASE_URL` (Neon), `CORS_ORIGIN` set to your web origin, and the
   optional integrations (NVIDIA, Resend, Upstash, B2) configured.
 - Run `prisma contract emit && prisma db update` (or `npm run db:push
